@@ -1,0 +1,6 @@
+* [pypapermerge](pypapermerge/index.md)
+    * [api](pypapermerge/api.md)
+    * [endpoints](pypapermerge/endpoints/index.md)
+        * [documents](pypapermerge/endpoints/documents.md)
+        * [nodes](pypapermerge/endpoints/nodes.md)
+    * [tools](pypapermerge/tools.md)

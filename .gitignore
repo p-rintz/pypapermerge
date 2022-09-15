@@ -1,0 +1,23 @@
+# Virtualenvs
+venv/
+.venv
+
+# non-example Config files
+.env
+
+# development files
+.idea/
+.mypy_cache/
+.pytest_cache/
+tests/vcr_cassettes/
+__pycache__/
+test.py
+
+# deployment files
+site/
+build/
+*.egg-info*
+
+# testfiles
+*.pdf
+/.coverage

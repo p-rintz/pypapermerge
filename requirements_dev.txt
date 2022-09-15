@@ -1,0 +1,8 @@
+pytest
+mkdocs
+mkdocs-material
+mkdocs-literate-nav
+mkdocs_gen_files
+mkdocs-section-index
+mkdocstrings[python]
+pygments==2.11.2

@@ -1,0 +1,46 @@
+site_name: pypapermerge Docs
+repo_url: https://github.com/squidfunk/mkdocs-material
+
+nav:
+- Index: index.md
+- Code Reference: reference/
+
+theme:
+  name: material
+  logo: logo.png
+  icon:
+    repo: fontawesome/brands/git-alt
+  palette:
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: green
+    accent: orange
+    toggle:
+      icon: material/brightness-7
+      name: Switch to dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: deep orange
+    accent: green
+    toggle:
+      icon: material/brightness-4
+      name: Switch to light mode
+
+markdown_extensions:
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.snippets:
+      check_paths: true
+
+plugins:
+- search
+- autorefs
+- gen-files:
+    scripts:
+    - docs/gen_ref_naf.py
+- literate-nav:
+    nav_file: SUMMARY.md
+- section-index
+- mkdocstrings:
+    watch:
+      - pypapermerge
