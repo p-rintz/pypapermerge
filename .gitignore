@@ -12,6 +12,8 @@ venv/
 tests/vcr_cassettes/
 __pycache__/
 test.py
+.coverage
+coverage.*
 
 # deployment files
 site/
@@ -20,4 +22,3 @@ build/
 
 # testfiles
 *.pdf
-/.coverage

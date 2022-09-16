@@ -44,4 +44,7 @@ lint-check: venv
 	black . --check --diff --color
 	pylint $(PROJECT)
 
-release: coverage-report lint docs
+docs-deploy: venv
+	mkdocs gh-deploy
+
+release: coverage-report lint docs-deploy

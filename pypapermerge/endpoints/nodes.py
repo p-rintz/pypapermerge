@@ -7,7 +7,7 @@ from loguru import logger
 from pypapermerge import tools
 
 
-class Nodes:
+class Nodes:  # pylint: disable=R0903
     """
     Class that implements the nodes endpoints
     """

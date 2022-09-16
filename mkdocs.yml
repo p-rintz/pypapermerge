@@ -1,5 +1,6 @@
 site_name: pypapermerge Docs
 repo_url: https://github.com/squidfunk/mkdocs-material
+remote_name: github
 
 nav:
 - Index: index.md
