@@ -1,18 +1,22 @@
+"""Module that includes the Documents class"""
 from __future__ import annotations
 
-import requests
 import json
 import os
-from loguru import logger
 from collections import defaultdict
-from pypapermerge import tools
 from mimetypes import guess_type
 
+import requests
+from loguru import logger
 
-class Documents(object):
+from pypapermerge import tools
+
+
+class Documents:
     """
     Class that implements the document endpoints
     """
+
     def __init__(self, api):  # type: ignore
         self.api = api
 
@@ -23,16 +27,20 @@ class Documents(object):
             return_dict: Key: ID of documents, Value (dict): attributes of documents
         """
         headers = {
-            'Authorization': f'Token {self.api.token}',
+            "Authorization": f"Token {self.api.token}",
         }
-        response = requests.get(f'{self.api.apiurl}/documents/', headers=headers)
+        response = requests.get(
+            f"{self.api.apiurl}/documents/", headers=headers, timeout=5
+        )
         json_content = json.loads(response.content)
         return_dict = {}
-        for i in json_content['data']:
-            return_dict.update({i['id']: i['attributes']})
+        for i in json_content["data"]:
+            return_dict.update({i["id"]: i["attributes"]})
         return return_dict
 
-    def id(self, name: str, content_type: str) -> str | list[str] | None:
+    def id(  # pylint: disable=C0103
+        self, name: str, content_type: str
+    ) -> str | list[str] | None:
         """
         Returns the ID of either documents or folders type
         Args:
@@ -46,16 +54,16 @@ class Documents(object):
         tools.check_ctype(content_type)
         reverse_dict = self._reverse_list(content_type)
         if name in reverse_dict:
-            logger.trace(f'ID of {name} is: {reverse_dict[name]}')
+            logger.trace(f"ID of {name} is: {reverse_dict[name]}")
             return_id = reverse_dict[name]
             if len(return_id) == 1:
                 return return_id[0]
-            else:
-                return return_id
-        else:
-            return None
+            return return_id
+        return None
 
-    def upload(self, file: str, folder: str = '.inbox', isid: bool = False) -> requests.Response:
+    def upload(
+        self, file: str, folder: str = ".inbox", isid: bool = False
+    ) -> requests.Response:
         """
         Uploads a file to a folder.
         Args:
@@ -66,27 +74,27 @@ class Documents(object):
              Upload response
         """
         if not os.path.exists(file):
-            raise FileNotFoundError(f'File {file} does not exist.')
+            raise FileNotFoundError(f"File {file} does not exist.")
         file_name = os.path.basename(file)
-        if self.id(file_name, 'documents'):
-            file_id = self.id(file_name, 'documents')
+        if self.id(file_name, "documents"):
+            file_id = self.id(file_name, "documents")
             tools.check_id(file_id)
         else:
             if isid:
                 folder_id: str = folder
             else:
-                folder_id = self.id(folder, 'folders')  # type: ignore
+                folder_id = self.id(folder, "folders")  # type: ignore
             tools.check_id(folder_id)
-            file_id = self.api.nodes.create(file_name, 'documents', folder_id)
-        url = f'{self.api.apiurl}/documents/{file_id}/upload/{file_name}'
+            file_id = self.api.nodes.create(file_name, "documents", folder_id)
+        url = f"{self.api.apiurl}/documents/{file_id}/upload/{file_name}"
         mimetype = guess_type(file_name)[1]
         headers: dict = {
-            'Content-Disposition': f'attachment; filename={file_name}',
-            'Content-Type': mimetype,
-            'Authorization': f'Token {self.api.token}'
+            "Content-Disposition": f"attachment; filename={file_name}",
+            "Content-Type": mimetype,
+            "Authorization": f"Token {self.api.token}",
         }
-        with open(file, 'rb') as fobj:
-            response = requests.put(url, data=fobj, headers=headers)
+        with open(file, "rb") as fobj:
+            response = requests.put(url, data=fobj, headers=headers, timeout=5)
         return response
 
     def delete(self, idd: str) -> bool:
@@ -98,31 +106,28 @@ class Documents(object):
             Either True or False, based on the success of deletion of the document
         """
         tools.check_id(idd)
-        url = f'{self.api.apiurl}/documents/{idd}'
-        headers: dict = {
-            'Authorization': f'Token {self.api.token}'
-        }
-        response = requests.delete(url, headers=headers)
-        if response.status_code == 204:
-            return True
-        else:
-            return False
+        url = f"{self.api.apiurl}/documents/{idd}"
+        headers: dict = {"Authorization": f"Token {self.api.token}"}
+        response = requests.delete(url, headers=headers, timeout=5)
+        return_code = response.status_code == 204
+        return return_code
 
     def _reverse_list(self, content_type: str) -> dict:
         """
-        Returns a reversed list of all documents, in order to find the specific ID of a document if only a name is known
+        Returns a reversed list of all documents,
+        in order to find the specific ID of a document if only a name is known
         """
         tools.check_ctype(content_type)
         headers = {
-            'Authorization': f'Token {self.api.token}',
+            "Authorization": f"Token {self.api.token}",
         }
-        if content_type == 'documents':
-            url = f'{self.api.apiurl}/documents/'
+        if content_type == "documents":
+            url = f"{self.api.apiurl}/documents/"
         else:
-            url = f'{self.api.apiurl}/folders/'
-        response = requests.get(url, headers=headers)
+            url = f"{self.api.apiurl}/folders/"
+        response = requests.get(url, headers=headers, timeout=5)
         json_content = json.loads(response.content)
         reverse_dict = defaultdict(list)
-        for i in json_content['data']:
-            reverse_dict[i['attributes']['title']].append(i['id'])
+        for i in json_content["data"]:
+            reverse_dict[i["attributes"]["title"]].append(i["id"])
         return reverse_dict

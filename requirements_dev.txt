@@ -1,8 +1,12 @@
 pytest
+pylint
+black
+isort[colors]
+pydocstyle
 mkdocs
-mkdocs-material
+mkdocs-material>=8.5
 mkdocs-literate-nav
 mkdocs_gen_files
 mkdocs-section-index
 mkdocstrings[python]
-pygments==2.11.2
+pygments
